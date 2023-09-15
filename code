@@ -1,0 +1,45 @@
+import disnake
+from disnake.ext import commands
+from disnake.ext.commands import Bot
+from disnake.ext import music
+import disnake.ext.commands.errors as discord_errors
+import youtube_dl
+
+intents = disnake.Intents.default()
+intents.members = True
+
+bot = Bot(command_prefix='!', intents=intents)
+
+# Определите ваш токен бота здесь
+TOKEN = 'YOUR_BOT_TOKEN'
+
+# Подключение к голосовому каналу
+bot.add_cog(music.Music(bot))
+
+# ...
+
+@bot.event
+async def on_ready():
+    print(f'Бот {bot.user.name} готов к работе')
+
+# ...
+
+@bot.command()
+async def play(ctx, *, query: str):
+    """Играть музыку из YouTube или Spotify"""
+    await ctx.invoke(bot.get_command('join'))
+    await ctx.invoke(bot.get_command('c play'), query)
+
+@bot.command()
+async def join(ctx):
+    """Подключиться к голосовому каналу"""
+    await ctx.invoke(bot.get_command('c join'))
+
+@bot.command()
+async def leave(ctx):
+    """Покинуть голосовой канал"""
+    await ctx.invoke(bot.get_command('c leave'))
+
+# ...
+
+bot.run(TOKEN)
